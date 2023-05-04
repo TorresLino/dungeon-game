@@ -10,6 +10,15 @@ public class Chunk
 
 	public ChunkGenerationStatus Status { get => status; }
 	public Vector2Int Location { get => location; }
+
+	public Chunk(int x, int y)
+	{
+		this.location = new Vector2Int(x, y);
+		this.connections = new List<Connection>();
+		this.rooms = new List<Room>();
+
+		this.status = ChunkGenerationStatus.None;
+	}
 }
 
 public enum ChunkGenerationStatus

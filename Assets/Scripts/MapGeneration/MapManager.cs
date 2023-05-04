@@ -52,20 +52,25 @@ public class MapManager : MonoBehaviour
 		return (new Vector2Int((int)coord.x, (int)coord.z)) / chunkWidth;
 	}
 
-	private bool IsCoordInRange(Vector2Int coord)
-	{
-		return (coord - this.currentPlayerChunkCoordinate).magnitude <= this.loadRange;
-	}
-
 	private void UpdateLoadedChunks()
 	{
-		foreach (Chunk chunk in this.chunksInRange)
+		List<Chunk> newChunks = new List<Chunk>();
+
+		for (int x = 0 - this.loadRange; x < this.loadRange; x++)
 		{
-			if (!IsCoordInRange(chunk.Location))
+			for (int y = 0 - this.loadRange; y < this.loadRange; y++)
 			{
-				// continue
-				this.chunksInRange.Remove(chunk);
+				Chunk chunk = 
+					this.chunksInRange.Find(c => c.Location == new Vector2Int(x, y)) ??
+					this.mapStore.GetChunkAt(new Vector2Int(x, y)) ??
+					new Chunk(x, y);
+
+				newChunks.Add(chunk);
 			}
 		}
+
+		ChunkGenerator.GenerateChunks(newChunks);
+
+		this.chunksInRange = newChunks;
 	}
 }
