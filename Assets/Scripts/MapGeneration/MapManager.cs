@@ -9,7 +9,9 @@ public class MapManager : MonoBehaviour
 	[SerializeField]
 	private static int roomsPerChunk = 3;
 	[SerializeField]
-	private int loadRange = 4; // radius of chunks from player
+	private int loadRange = 5; // radius of chunks from player
+	[SerializeField]
+	private uint seed = 0;
 
 	// player transform reference
 	[SerializeField]
@@ -63,14 +65,22 @@ public class MapManager : MonoBehaviour
 				Chunk chunk = 
 					this.chunksInRange.Find(c => c.Location == new Vector2Int(x, y)) ??
 					this.mapStore.GetChunkAt(new Vector2Int(x, y)) ??
-					new Chunk(x, y);
+					new Chunk(x, y, roomsPerChunk, chunkWidth, seed);
 
 				newChunks.Add(chunk);
 			}
 		}
 
-		ChunkGenerator.GenerateChunks(newChunks);
+		//ChunkGenerator.GenerateChunks(newChunks, this.currentPlayerChunkCoordinate);
+
+		this.mapStore.PushCompleteChunks(newChunks);
 
 		this.chunksInRange = newChunks;
 	}
+
+	public List<Chunk> Chunks { get { return this.chunksInRange; } }
+
+	public Vector2Int PlayerChunkCoorinate { get { return this.currentPlayerChunkCoordinate;  } }
+
+	public int LoadDistance { get { return this.loadRange; } }
 }

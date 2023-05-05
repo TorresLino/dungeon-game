@@ -14,6 +14,17 @@ public class MapStore
 		}
 	}
 
+	public void PushCompleteChunks(List<Chunk> chunks)
+	{
+		foreach (var chunk in chunks)
+		{
+			if (chunk.Status == ChunkGenerationStatus.Done)
+			{
+				this.PushChunkToStore((CompleteChunk)chunk);
+			}
+		}
+	}
+
 	public Chunk GetChunkAt(Vector2Int location)
 	{
 		return chunkStore[location];
