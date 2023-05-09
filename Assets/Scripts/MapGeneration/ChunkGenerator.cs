@@ -10,12 +10,16 @@ public class ChunkGenerator : MonoBehaviour
 
 	public void GenerateChunks(List<Chunk> chunks, Vector2Int playerChunkLocation)
 	{
-		//this.GenerateLayer(ChunkGenerationStatus.RandomLocation, this.test);
+		this.GenerateLayer(ChunkGenerationStatus.RandomLocation, GenerateLayer1);
+
+		this.GenerateLayer(ChunkGenerationStatus.LocationAndRadius, GenerateLayer2);
+
+		this.GenerateLayer(ChunkGenerationStatus.Connections, GenerateLayer3);
 	}
 
 	public void GenerateLayer(ChunkGenerationStatus status, LayerGenerationFunction function)
 	{
-		List<Chunk> chunks = mapManager.Chunks.FindAll(c => 
+		List<Chunk> chunks = this.Chunks.FindAll(c =>
 			c.Status == status &&
 			this.GetDistanceFromPlayerChunk(c) >= this.mapManager.LoadDistance - (int)status
 		);
@@ -34,11 +38,6 @@ public class ChunkGenerator : MonoBehaviour
 		);
 	}
 
-	private void GenerateLayer0(Chunk chunk)
-	{
-		
-	}
-
 	private void GenerateLayer1(Chunk chunk)
 	{
 
@@ -48,6 +47,31 @@ public class ChunkGenerator : MonoBehaviour
 	{
 
 	}
+
+	private void GenerateLayer3(Chunk chunk)
+	{
+
+	}
+
+	private List<Chunk> GetNeighboringChunks(Chunk chunk)
+	{
+		List<Chunk> chunks = new List<Chunk>();
+
+		for(int x=-1; x<=1; x++)
+		{
+			for(int y=-1; y<=1; y++)
+			{
+				if (x == 0 && y == 0)
+					continue;
+
+				chunks.Add(this.Chunks.Find(c => c.Location == (chunk.Location + new Vector2Int(x, y)) ));
+			}
+		}
+
+		return chunks;
+	}
+
+	private List<Chunk> Chunks { get { return this.mapManager.Chunks; } }
 }
 
 public enum ChunkGenerationStatus
